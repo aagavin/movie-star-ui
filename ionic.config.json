@@ -1,0 +1,7 @@
+{
+  "name": "Movie Star",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
