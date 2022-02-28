@@ -1,4 +1,4 @@
-import { IonList, IonImg, IonItem, IonLabel, IonNote, IonAvatar } from "@ionic/react"
+import { IonList, IonImg, IonItem, IonLabel, IonNote, IonThumbnail } from "@ionic/react"
 import './PopularList.css'
 interface PopularListProps {
   items: Array<any>;
@@ -10,13 +10,13 @@ const PopularList: React.FC<PopularListProps> = ({ items }) => {
       <IonList>
         {items.map(item => {
           return (
-            <IonItem>
-              <IonAvatar slot="start" class="avatar">
+            <IonItem detail button key={item.id} routerLink={`/media/${item.id}`}>
+              <IonThumbnail slot="start" class="avatar">
                 <IonImg src={item.poster} alt={`poster for ${item.title}`} />
-              </IonAvatar>
+              </IonThumbnail>
               <IonLabel>
-                <h2>{item.title}</h2>
-                <h3>{item.title_cast}</h3>
+                <h2 className="ion-text-wrap">{item.title}</h2>
+                <h3 className="ion-text-wrap">{item.title_cast}</h3>
                 <IonNote slot="end">raiting	{item.raiting}</IonNote>
               </IonLabel>
             </IonItem>)
