@@ -54,7 +54,13 @@ const Page: React.FC = () => {
             <IonSegmentButton value="tv"><IonLabel>tv</IonLabel></IonSegmentButton>
           </IonSegment>
         </IonToolbar>
-        <PopularList items={segment === 'movies' ? movies : tv} />
+        <div style={{ display: segment === 'movies' ? 'inherit' : 'none' }}>
+          <PopularList items={movies} />
+        </div>
+        <div style={{ display: segment === 'tv' ? 'inherit' : 'none' }}>
+          <PopularList items={tv} />
+        </div>
+
       </IonContent>
     </IonPage>
   );
