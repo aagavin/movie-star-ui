@@ -69,18 +69,32 @@ const Media: React.FC<MediaProps> = ({ match }) => {
 
 
   if (isLoading) {
-    return (
-      <IonCard>
-        <IonCardHeader>
-          <IonSkeletonText animated style={{ height: '3em' }} />
-          <IonCardTitle><IonSkeletonText animated /></IonCardTitle>
-        </IonCardHeader>
-        <IonCardContent>
-          <IonSkeletonText animated />
-        </IonCardContent>
-      </IonCard>
-    );
   }
+
+  const getLoading = () => (
+    <IonCard>
+    <IonCardHeader>
+      <IonSkeletonText animated style={{ height: '3em' }} />
+      <IonCardTitle><IonSkeletonText animated /></IonCardTitle>
+    </IonCardHeader>
+    <IonCardContent>
+      <IonSkeletonText animated />
+    </IonCardContent>
+  </IonCard>
+  )
+
+  const getMediaCard = () => (
+    <IonCard>
+    <img src={media.posterUrl?.replace(/_V1_.*jpg/i, '.jpg')} alt={`poster for ${media.primaryTitle}`} />
+    <IonCardHeader>
+      <IonCardSubtitle>{media.startYear} {media.endYear === '\\N' ? null : `-${media.endYear}`}</IonCardSubtitle>
+      <IonCardTitle>{media.originalTitle}</IonCardTitle>
+    </IonCardHeader>
+    <IonCardContent>
+      {media.description}
+    </IonCardContent>
+  </IonCard>
+  )
 
   return (
     <IonPage>
@@ -94,16 +108,7 @@ const Media: React.FC<MediaProps> = ({ match }) => {
       </IonHeader>
 
       <IonContent fullscreen>
-        <IonCard>
-          <img src={media.posterUrl?.replace(/_V1_.*jpg/i, '.jpg')} alt={`poster for ${media.primaryTitle}`} />
-          <IonCardHeader>
-            <IonCardSubtitle>{media.startYear} {media.endYear === '\\N' ? null : `-${media.endYear}`}</IonCardSubtitle>
-            <IonCardTitle>{media.originalTitle}</IonCardTitle>
-          </IonCardHeader>
-          <IonCardContent>
-            {media.description}
-          </IonCardContent>
-        </IonCard>
+        {isLoading ? getLoading() :getMediaCard() }
       </IonContent>
     </IonPage>
   )
