@@ -5,6 +5,9 @@ interface PopularListProps {
 }
 
 const PopularList: React.FC<PopularListProps> = ({ items }) => {
+
+  items.slice(50, 50);
+  
   return (
     <>
       <IonList>
@@ -17,7 +20,7 @@ const PopularList: React.FC<PopularListProps> = ({ items }) => {
               <IonLabel>
                 <h2 className="ion-text-wrap">{item.title}</h2>
                 <h3 className="ion-text-wrap">{item.title_cast}</h3>
-                <IonNote slot="end">raiting	{item.raiting}</IonNote>
+                <IonNote slot="end">{item.raiting && `raiting: ${item.raiting}`}</IonNote>
               </IonLabel>
             </IonItem>)
         })}
