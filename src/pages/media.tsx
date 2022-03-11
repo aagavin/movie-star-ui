@@ -1,6 +1,8 @@
-import { IonBackButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonPage, IonSkeletonText, IonTitle, IonToolbar } from "@ionic/react";
+import { IonBackButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonSegment, IonSegmentButton, IonSkeletonText, IonTitle, IonToolbar } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router";
+import './media.css';
+
 
 interface MediaProps
   extends RouteComponentProps<{
@@ -21,10 +23,19 @@ export interface MediaObj {
   description?: string;
 }
 
+interface EpisodeObj {
+  parentTconst: string;
+  episodeNumber: number;
+  tconst: string;
+  seasonNumber: number;
+}
+
 const Media: React.FC<MediaProps> = ({ match }) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [media, setMedia] = useState<MediaObj>({});
+  const [episodes, setEpisodes] = useState<EpisodeObj[]>([]);
+  const [selectedSeason, setSelectedSeason] = useState(1);
 
 
 
@@ -68,6 +79,16 @@ const Media: React.FC<MediaProps> = ({ match }) => {
   }, [match.params.mediaId])
 
 
+  useEffect(() => {
+    if(media.titleType === 'tvSeries') {
+      fetch(`https://api.aagavin.ca/media/${media.tconst}/episodes`)
+      .then(r => r.json())
+      .then(r  => setEpisodes(r))
+      .catch(console.error);
+    }
+  }, [media])
+
+
   if (isLoading) {
   }
 
@@ -85,7 +106,7 @@ const Media: React.FC<MediaProps> = ({ match }) => {
 
   const getMediaCard = () => (
     <IonCard>
-    <img src={media.posterUrl?.replace(/_V1_.*jpg/i, '.jpg')} alt={`poster for ${media.primaryTitle}`} />
+    <img id="posterImage" src={media.posterUrl?.replace(/_V1_.*jpg/i, '.jpg')} alt={`poster for ${media.primaryTitle}`} />
     <IonCardHeader>
       <IonCardSubtitle>{media.startYear} {media.endYear === '\\N' ? null : `-${media.endYear}`}</IonCardSubtitle>
       <IonCardTitle>{media.originalTitle}</IonCardTitle>
@@ -94,14 +115,41 @@ const Media: React.FC<MediaProps> = ({ match }) => {
       {media.description}
     </IonCardContent>
   </IonCard>
-  )
+  );
+
+  const getEpisodesCard = () => {
+    const seasonsNumbers = episodes.map(e => e.seasonNumber);
+    const seasons = Array.from(new Set<number>(seasonsNumbers));
+    const epSeasonsNum = episodes.filter(e => e.seasonNumber === selectedSeason).map(e => e.episodeNumber).sort((x,y) => x-y);
+
+
+    return (
+      <IonCard>
+        <IonCardHeader>
+          <IonCardTitle>Seasons</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>
+          <IonSegment onIonChange={e => setSelectedSeason(parseInt(e.detail.value+''))} scrollable={true}>
+            {seasons.map(s => (
+              <IonSegmentButton value={`${s}`} key={s}>
+                <IonLabel>Season {s}</IonLabel>
+              </IonSegmentButton>
+            ))}
+          </IonSegment>
+          <IonList>
+            {epSeasonsNum.map(epNum => (<IonItem key={epNum}><IonLabel>{epNum}</IonLabel></IonItem>))}
+          </IonList>
+        </IonCardContent>
+      </IonCard>
+    );
+  }
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton />
+            <IonBackButton defaultHref="/page/popular" />
           </IonButtons>
           <IonTitle>Media</IonTitle>
         </IonToolbar>
@@ -109,6 +157,7 @@ const Media: React.FC<MediaProps> = ({ match }) => {
 
       <IonContent fullscreen>
         {isLoading ? getLoading() :getMediaCard() }
+        { episodes.length !== 0 && getEpisodesCard() }
       </IonContent>
     </IonPage>
   )
