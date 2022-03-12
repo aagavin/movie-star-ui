@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 
 import { useLocation } from "react-router-dom";
-import { homeOutline, home, searchOutline, search } from "ionicons/icons";
+import { homeOutline, home, searchOutline, search, logInOutline, logIn } from "ionicons/icons";
 import "./Menu.css";
 
 interface AppPage {
@@ -34,6 +34,12 @@ const appPages: AppPage[] = [
     iosIcon: searchOutline,
     mdIcon: search,
   },
+  {
+    title: "Login",
+    url: "/login",
+    iosIcon: logInOutline,
+    mdIcon: logIn
+  }
 ];
 
 const Menu: React.FC = () => {

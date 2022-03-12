@@ -1,3 +1,4 @@
+
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route } from 'react-router-dom';
@@ -5,6 +6,8 @@ import Menu from './components/Menu';
 import Page from './pages/Page';
 import Media from './pages/media';
 import Search from './pages/Search';
+import Login from './pages/login';
+import Create from './pages/CreateAccount';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -39,6 +42,8 @@ const App: React.FC = () => {
             </Route>
             <Route path="/popular" component={Page} exact={true} />
             <Route path="/search" component={Search} exact={true} />
+            <Route path="/login" component={Login} exact={true} />
+            <Route path="/login/create" component={Create} exact={true} />
             <Route path="/media/:mediaId" exact={true} component={Media} />
             <Route render={() => <h1>Not found</h1>} />
           </IonRouterOutlet>
