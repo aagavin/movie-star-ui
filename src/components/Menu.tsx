@@ -24,13 +24,13 @@ interface AppPage {
 const appPages: AppPage[] = [
   {
     title: "Home",
-    url: "/page/popular",
+    url: "/popular",
     iosIcon: homeOutline,
     mdIcon: home,
   },
   {
     title: "Search",
-    url: "/page/search",
+    url: "/search",
     iosIcon: searchOutline,
     mdIcon: search,
   },

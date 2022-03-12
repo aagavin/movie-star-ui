@@ -35,10 +35,10 @@ const App: React.FC = () => {
           <Menu />
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
-              <Redirect to="/page/popular" />
+              <Redirect to="/popular" />
             </Route>
-            <Route path="/page/popular" component={Page} exact={true} />
-            <Route path="/page/search" component={Search} exact={true} />
+            <Route path="/popular" component={Page} exact={true} />
+            <Route path="/search" component={Search} exact={true} />
             <Route path="/media/:mediaId" exact={true} component={Media} />
             <Route render={() => <h1>Not found</h1>} />
           </IonRouterOutlet>
