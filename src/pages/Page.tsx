@@ -19,27 +19,28 @@ const Page: React.FC = () => {
   const [tv, setTv] = useState([]);
   const [segment, setSegment] = useState("movies");
 
-  const getMovies = async () => {
-    const resp = await fetch("https://api.aagavin.ca/media/movie/popular").then(
-      (r) => r.json()
-    );
-    setMovies(resp);
-  };
-
-  const getTv = async () => {
-    const resp = await fetch("https://api.aagavin.ca/media/tv/popular").then(
-      (r) => r.json()
-    );
-    setTv(resp);
+  const getMedia = async (mediaType: string) => {
+    const popMedia = sessionStorage.getItem(`pop${mediaType}`);
+    if (popMedia !== null) {
+      mediaType === "movie"
+        ? setMovies(JSON.parse(popMedia))
+        : setTv(JSON.parse(popMedia));
+    } else {
+      const resp = await fetch(
+        `https://api.aagavin.ca/media/${mediaType}/popular`
+      ).then((r) => r.json());
+      setMovies(resp);
+      sessionStorage.setItem(`pop${mediaType}`, JSON.stringify(resp));
+    }
   };
 
   useEffect(() => {
-    getMovies();
+    getMedia("movie");
   }, []);
 
   useEffect(() => {
     if (segment === "tv" && tv.length === 0) {
-      getTv();
+      getMedia("tv");
     }
   }, [segment, tv]);
 
