@@ -69,10 +69,7 @@ const Search = (): JSX.Element => {
       </IonHeader>
 
       <IonContent fullscreen>
-        <IonSearchbar
-          value={searchText}
-          onIonChange={(e) => setSearchText(e.detail.value!)}
-        />
+        <IonSearchbar onIonChange={(e) => setSearchText(e.detail.value!)} />
         {searchResults.length !== 0 && <PopularList items={searchResults} />}
       </IonContent>
     </IonPage>

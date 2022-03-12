@@ -102,7 +102,7 @@ const Media: React.FC<MediaProps> = ({ match }) => {
   }, [match.params.mediaId]);
 
   useEffect(() => {
-    if (media.titleType === "tvSeries") {
+    if (["tvMiniSeries", "tvSeries"].includes(media?.titleType!)) {
       fetch(`https://api.aagavin.ca/media/${media.tconst}/episodes`)
         .then((r) => r.json())
         .then((r) => setEpisodes(r))
@@ -174,7 +174,7 @@ const Media: React.FC<MediaProps> = ({ match }) => {
           <IonList>
             {epSeasonsNum.map((epNum) => (
               <IonItem key={epNum}>
-                <IonLabel>{epNum}</IonLabel>
+                <IonLabel>Episode: {epNum}</IonLabel>
               </IonItem>
             ))}
           </IonList>
