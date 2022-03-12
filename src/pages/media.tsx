@@ -188,7 +188,7 @@ const Media: React.FC<MediaProps> = ({ match }) => {
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/page/popular" />
+            <IonBackButton defaultHref="/popular" />
           </IonButtons>
           <IonTitle>Media</IonTitle>
         </IonToolbar>
