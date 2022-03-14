@@ -11,7 +11,18 @@ import {
 } from "@ionic/react";
 
 import { useLocation } from "react-router-dom";
-import { homeOutline, home, searchOutline, search, logInOutline, logIn } from "ionicons/icons";
+import { getAuth } from "firebase/auth";
+import {
+  homeOutline,
+  home,
+  searchOutline,
+  search,
+  logInOutline,
+  logIn,
+  logOutOutline,
+  logOut
+} from "ionicons/icons";
+import "../firebase";
 import "./Menu.css";
 
 interface AppPage {
@@ -21,6 +32,7 @@ interface AppPage {
   title: string;
 }
 
+const auth = getAuth();
 const appPages: AppPage[] = [
   {
     title: "Home",
@@ -34,13 +46,24 @@ const appPages: AppPage[] = [
     iosIcon: searchOutline,
     mdIcon: search,
   },
-  {
+];
+
+console.log(auth.currentUser);
+if (auth.currentUser) {
+  appPages.push({
+    title: "Log Out",
+    url: "/logout",
+    iosIcon: logOutOutline,
+    mdIcon: logOut,
+  });
+} else if (!auth.currentUser) {
+  appPages.push({
     title: "Login",
     url: "/login",
     iosIcon: logInOutline,
-    mdIcon: logIn
-  }
-];
+    mdIcon: logIn,
+  });
+}
 
 const Menu: React.FC = () => {
   const location = useLocation();
