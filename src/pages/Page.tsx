@@ -29,7 +29,10 @@ const Page: React.FC = () => {
       const resp = await fetch(
         `https://api.aagavin.ca/media/${mediaType}/popular`
       ).then((r) => r.json());
-      setMovies(resp);
+
+      mediaType === "movie"
+        ? setMovies(resp)
+        : setTv(resp);
       sessionStorage.setItem(`pop${mediaType}`, JSON.stringify(resp));
     }
   };
