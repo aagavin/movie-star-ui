@@ -7,6 +7,7 @@ import Page from './pages/Page';
 import Media from './pages/media';
 import Search from './pages/Search';
 import Login from './pages/login';
+import Logout from './pages/logout';
 import Create from './pages/CreateAccount';
 
 /* Core CSS required for Ionic components to work properly */
@@ -43,6 +44,7 @@ const App: React.FC = () => {
             <Route path="/popular" component={Page} exact={true} />
             <Route path="/search" component={Search} exact={true} />
             <Route path="/login" component={Login} exact={true} />
+            <Route path="/logout" component={Logout} exact={true} />
             <Route path="/login/create" component={Create} exact={true} />
             <Route path="/media/:mediaId" exact={true} component={Media} />
             <Route render={() => <h1>Not found</h1>} />
