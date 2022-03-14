@@ -17,21 +17,34 @@ import {
   IonCol,
   IonGrid,
   IonRow,
+  useIonToast
 } from "@ionic/react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 
 interface LoginProps extends RouteComponentProps<{}> {}
 
 const Login: React.FC<LoginProps> = ({ history }) => {
+
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const [present,] = useIonToast();
 
   useEffect(() => {
     if (!getAuth().currentUser) {
       setIsLoggedIn(true);
     }
   }, []);
+
+  const login = async () => {
+    const auth = getAuth();
+    await signInWithEmailAndPassword(auth, username, password);
+    present({ message: 'Successfully logged in', duration: 2000 });
+    history.push("/");
+  };
 
   const logout = async () => {
     await getAuth().signOut();
@@ -49,20 +62,32 @@ const Login: React.FC<LoginProps> = ({ history }) => {
         <IonCardContent>
           <IonList>
             <IonItem>
-              <IonInput placeholder="Username" />
+              <IonInput
+                placeholder="Username"
+                type="email"
+                value={username}
+                required
+                onIonChange={(e) => setUsername(e.detail.value!)}
+              />
             </IonItem>
 
             <IonItem>
-              <IonInput placeholder="Password" />
+              <IonInput
+                placeholder="Password"
+                type="password"
+                value={password}
+                required
+                onIonChange={(e) => setPassword(e.detail.value!)}
+              />
             </IonItem>
 
             <IonGrid>
               <IonRow>
                 <IonCol>
-                  <IonButton expand="block">Login</IonButton>
+                  <IonButton expand="block" onClick={login}>Login</IonButton>
                 </IonCol>
                 <IonCol>
-                  <IonButton expand="block">Clear</IonButton>
+                  <IonButton expand="block" onClick={() => {setUsername('');setPassword('')}} >Clear</IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>
