@@ -11,7 +11,7 @@ import {
 } from "@ionic/react";
 
 import { useLocation } from "react-router-dom";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   homeOutline,
   home,
@@ -20,10 +20,11 @@ import {
   logInOutline,
   logIn,
   logOutOutline,
-  logOut
+  logOut,
 } from "ionicons/icons";
 import "../firebase";
 import "./Menu.css";
+import { useEffect, useState } from "react";
 
 interface AppPage {
   url: string;
@@ -32,8 +33,7 @@ interface AppPage {
   title: string;
 }
 
-const auth = getAuth();
-const appPages: AppPage[] = [
+const defAppPages = [
   {
     title: "Home",
     url: "/popular",
@@ -48,25 +48,39 @@ const appPages: AppPage[] = [
   },
 ];
 
-console.log(auth.currentUser);
-if (auth.currentUser) {
-  appPages.push({
-    title: "Log Out",
-    url: "/logout",
-    iosIcon: logOutOutline,
-    mdIcon: logOut,
-  });
-} else if (!auth.currentUser) {
-  appPages.push({
-    title: "Login",
-    url: "/login",
-    iosIcon: logInOutline,
-    mdIcon: logIn,
-  });
-}
-
 const Menu: React.FC = () => {
   const location = useLocation();
+
+  const [appPages, setAppPages] = useState<AppPage[]>([]);
+
+  useEffect(() => {
+    onAuthStateChanged(getAuth(), (user) => {
+
+      if (user) {
+        setAppPages([
+          ...defAppPages,
+          {
+            title: "Log Out",
+            url: "/logout",
+            iosIcon: logOutOutline,
+            mdIcon: logOut,
+          },
+        ]);
+      } else {
+
+        setAppPages([
+          ...defAppPages,
+          {
+            title: "Login",
+            url: "/login",
+            iosIcon: logInOutline,
+            mdIcon: logIn,
+          },
+        ]);
+
+      }
+    });
+  }, []);
 
   return (
     <IonMenu contentId="main" type="overlay">
