@@ -27,31 +27,32 @@ const Search = (): JSX.Element => {
       }));
   };
 
-  const search = async () => {
-    const query = searchText.trim().toLowerCase();
-    const url = `https://proxy.aagavin.workers.dev/?https://v2.sg.media-imdb.com/suggestion/${query.charAt(
-      0
-    )}/${query.replace(" ", "_")}.json`;
-    return fetch(url, {
-      credentials: "omit",
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:96.0) Gecko/20100101 Firefox/96.0",
-        Accept: "application/json, text/plain, */*",
-        "Accept-Language": "en-CA,en-US;q=0.7,en;q=0.3",
-      },
-      referrer: "https://www.imdb.com/",
-      method: "GET",
-    })
-      .then((r) => r.json())
-      .then((r) => r?.d)
-      .then(formatResults);
-  };
 
   useEffect(() => {
+    // TODO update with usememo at some point
+    const search = async () => {
+      const query = searchText.trim().toLowerCase();
+      const url = `https://proxy.aagavin.workers.dev/?https://v2.sg.media-imdb.com/suggestion/${query.charAt(
+        0
+      )}/${query.replace(" ", "_")}.json`;
+      return fetch(url, {
+        credentials: "omit",
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:96.0) Gecko/20100101 Firefox/96.0",
+          Accept: "application/json, text/plain, */*",
+          "Accept-Language": "en-CA,en-US;q=0.7,en;q=0.3",
+        },
+        referrer: "https://www.imdb.com/",
+        method: "GET",
+      })
+        .then((r) => r.json())
+        .then((r) => r?.d)
+        .then(formatResults);
+    };
+
     if (searchText) {
       search().then((r: Array<Object>) => {
-        console.log(r);
         setSearchResults(r);
       });
     }
