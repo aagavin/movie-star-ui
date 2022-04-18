@@ -17,7 +17,7 @@ import {
   IonCol,
   IonGrid,
   IonRow,
-  useIonToast
+  useIonToast,
 } from "@ionic/react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -26,24 +26,41 @@ import { useEffect, useState } from "react";
 interface LoginProps extends RouteComponentProps<{}> {}
 
 const Login: React.FC<LoginProps> = ({ history }) => {
-
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [present,] = useIonToast();
+  const [present] = useIonToast();
 
   useEffect(() => {
-    if (!getAuth().currentUser) {
+    console.log(getAuth().currentUser);
+    if (getAuth().currentUser !== null) {
       setIsLoggedIn(true);
+    }
+    else {
+      setIsLoggedIn(false);
     }
   }, []);
 
   const login = async () => {
+    if (username === "" || password === "") {
+      present({ message: "Error with username or password", duration: 2000 });
+      setIsLoggedIn(false);
+      return;
+    }
+    console.log('----')
     const auth = getAuth();
-    await signInWithEmailAndPassword(auth, username, password);
-    present({ message: 'Successfully logged in', duration: 2000 });
-    history.push("/");
+    try {
+      await signInWithEmailAndPassword(auth, username, password);
+      present({ message: "Successfully logged in", duration: 2000 });
+      history.push("/");
+      setIsLoggedIn(true);
+    }
+    catch (err: any) {
+
+      present({ message: `Error with login ${err.message}`, duration: 2000 });
+    }
+
   };
 
   const logout = async () => {
@@ -84,10 +101,20 @@ const Login: React.FC<LoginProps> = ({ history }) => {
             <IonGrid>
               <IonRow>
                 <IonCol>
-                  <IonButton expand="block" onClick={login}>Login</IonButton>
+                  <IonButton expand="block" onClick={login}>
+                    Login
+                  </IonButton>
                 </IonCol>
                 <IonCol>
-                  <IonButton expand="block" onClick={() => {setUsername('');setPassword('')}} >Clear</IonButton>
+                  <IonButton
+                    expand="block"
+                    onClick={() => {
+                      setUsername("");
+                      setPassword("");
+                    }}
+                  >
+                    Clear
+                  </IonButton>
                 </IonCol>
               </IonRow>
             </IonGrid>
@@ -130,7 +157,7 @@ const Login: React.FC<LoginProps> = ({ history }) => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {isLoggedIn ? loggedOutContent() : loggedInContent()}
+        {isLoggedIn ? loggedInContent() : loggedOutContent()}
       </IonContent>
     </IonPage>
   );
