@@ -58,20 +58,16 @@ const Media: React.FC<MediaProps> = ({ match }) => {
     const mediaId = match.params.mediaId;
 
     const getMedia = async () => {
-      setIsLoading(true);
-      const mediaReq = await fetch(
+      
+      const mediaReq = fetch(
         `https://api.aagavin.ca/media/${mediaId}`
       ).then((r) => r.json());
-      const posterReq = await fetch(
-        `https://api.aagavin.ca/media/${mediaId}/poster`
-      ).then((r) => r.json());
-      const webDataReq = await fetch(
+      const webDataReq = fetch(
         `https://api.aagavin.ca/media/${mediaId}/webdata`
       ).then((r) => r.json());
 
-      const [mediaRes, posterRes, webDataRes] = await Promise.allSettled([
+      const [mediaRes, webDataRes] = await Promise.allSettled([
         mediaReq,
-        posterReq,
         webDataReq,
       ]);
 
@@ -80,22 +76,22 @@ const Media: React.FC<MediaProps> = ({ match }) => {
         Object.assign(media, mediaRes.value);
       }
 
-      if (posterRes.status === "fulfilled") {
-        Object.assign(media, posterRes.value);
-      }
-
       if (webDataRes.status === "fulfilled") {
         Object.assign(media, webDataRes.value);
       }
 
-      setMedia(media);
-      localStorage.setItem(match.params.mediaId, JSON.stringify(media));
-      setIsLoading(false);
+      return media;
     };
 
     const mediaCache = localStorage.getItem(mediaId);
     if (mediaCache === null) {
-      getMedia();
+      setIsLoading(true);
+      getMedia().then(r => {
+        setMedia(r);
+        localStorage.setItem(mediaId, JSON.stringify(r));
+        setIsLoading(false);
+      });
+      
     } else {
       setMedia(JSON.parse(mediaCache));
     }
@@ -110,8 +106,6 @@ const Media: React.FC<MediaProps> = ({ match }) => {
     }
   }, [media]);
 
-  if (isLoading) {
-  }
 
   const getLoading = () => (
     <IonCard>
