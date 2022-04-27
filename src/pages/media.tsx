@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { RouteComponentProps } from "react-router";
+
 import {
   IonBackButton,
   IonButtons,
@@ -18,8 +21,8 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router";
+
+import AddToFavButton from "../components/AddToFavBtn";
 import "./media.css";
 
 interface MediaProps
@@ -58,10 +61,9 @@ const Media: React.FC<MediaProps> = ({ match }) => {
     const mediaId = match.params.mediaId;
 
     const getMedia = async () => {
-      
-      const mediaReq = fetch(
-        `https://api.aagavin.ca/media/${mediaId}`
-      ).then((r) => r.json());
+      const mediaReq = fetch(`https://api.aagavin.ca/media/${mediaId}`).then(
+        (r) => r.json()
+      );
       const webDataReq = fetch(
         `https://api.aagavin.ca/media/${mediaId}/webdata`
       ).then((r) => r.json());
@@ -86,12 +88,11 @@ const Media: React.FC<MediaProps> = ({ match }) => {
     const mediaCache = localStorage.getItem(mediaId);
     if (mediaCache === null) {
       setIsLoading(true);
-      getMedia().then(r => {
+      getMedia().then((r) => {
         setMedia(r);
         localStorage.setItem(mediaId, JSON.stringify(r));
         setIsLoading(false);
       });
-      
     } else {
       setMedia(JSON.parse(mediaCache));
     }
@@ -105,7 +106,6 @@ const Media: React.FC<MediaProps> = ({ match }) => {
         .catch(console.error);
     }
   }, [media]);
-
 
   const getLoading = () => (
     <IonCard>
@@ -122,21 +122,26 @@ const Media: React.FC<MediaProps> = ({ match }) => {
   );
 
   const getMediaCard = () => (
-    <IonCard>
-      <img
-        id="posterImage"
-        src={media.posterUrl?.replace(/_V1_.*jpg/i, ".jpg")}
-        alt={`poster for ${media.primaryTitle}`}
-      />
-      <IonCardHeader>
-        <IonCardSubtitle>
-          {media.startYear}{" "}
-          {media.endYear === "\\N" ? null : `-${media.endYear}`}
-        </IonCardSubtitle>
-        <IonCardTitle>{media.originalTitle}</IonCardTitle>
-      </IonCardHeader>
-      <IonCardContent>{media.description}</IonCardContent>
-    </IonCard>
+    <>
+      <IonCard>
+        <img
+          id="posterImage"
+          src={media.posterUrl
+            ?.replace(/_V1_.*jpg/i, ".jpg")
+            .replace(/_V1_.*webp/i, "")}
+          alt={`poster for ${media.primaryTitle}`}
+        />
+        <IonCardHeader>
+          <IonCardSubtitle>
+            {media.startYear}{" "}
+            {media.endYear === "\\N" ? null : `-${media.endYear}`}
+          </IonCardSubtitle>
+          <IonCardTitle>{media.originalTitle}</IonCardTitle>
+        </IonCardHeader>
+        <IonCardContent>{media.description}</IonCardContent>
+      </IonCard>
+      <AddToFavButton />
+    </>
   );
 
   const getEpisodesCard = () => {
